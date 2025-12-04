@@ -1,0 +1,23 @@
+IAM Pain Points in Divestiture
+
+Separation of shared identities, roles, and entitlements without disrupting operations.
+
+Residual/unauthorized access remaining across parent and divested environments.
+
+Heavy entitlement clean-up for legacy and undocumented permissions.
+
+Carve-out challenges for SSO, MFA, and lifecycle management workflows.
+
+Complex directory split (AD/Entra ID) with high risk of downtime.
+
+Mandatory large-scale access recertification to meet audit requirements.
+
+Inconsistent access models across business units slowing standardization.
+
+PAM account separation, credential rotation, and policy rebuilds.
+
+Automation and IAM connectors breaking due to dependency on parent infra.
+
+Increased security exposure during transition windows.
+
+Licensing, tooling, and vendor contract dependencies delaying transition.
