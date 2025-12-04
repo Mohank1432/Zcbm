@@ -21,3 +21,48 @@ Automation and IAM connectors breaking due to dependency on parent infra.
 Increased security exposure during transition windows.
 
 Licensing, tooling, and vendor contract dependencies delaying transition.
+
+
+IAM Activities (Workstreams / BAU)
+
+Identity lifecycle management (Joiner–Mover–Leaver).
+
+Application onboarding and access provisioning.
+
+Role/entitlement modelling and periodic access reviews.
+
+SSO/MFA integration and authentication management.
+
+Privileged Access Management operations.
+
+Directory and identity store management (AD/Entra ID).
+
+Access issue resolution, incident support & BAU operations.
+
+Compliance reporting and audit support.
+
+Connector maintenance, workflow tuning & policy updates.
+
+IAM Outcomes (Automation & AI Driven)
+
+AI-powered access recommendations to minimize manual approvals.
+
+Automated user onboarding through workflow orchestration & rule-based provisioning.
+
+Conversational chatbot for access requests, app onboarding queries & password resets.
+
+Self-service identity portal with AI-guided access suggestions and faster fulfillment.
+
+AI-based anomaly detection for risky access and unusual user behavior.
+
+Predictive access modelling to reduce role explosion and entitlement creep.
+
+Automated access reviews with ML-based risk scoring to reduce recertification fatigue.
+
+Service Center–enabled IAM operations with standardized SLAs and automated routing.
+
+Automated PAM rotations & privileged session monitoring using ML-driven alerts.
+
+Continuous compliance automation via AI engines that flag violations proactively.
+
+End-to-end workflow automation reducing manual IAM effort and operational overhead.
