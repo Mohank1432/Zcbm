@@ -1,1 +1,111 @@
 
+# ==========================================
+# CONFIGURATION
+# ==========================================
+# Edit these paths to match your environment
+$InputFile  = "C:\Temp\ServerList.txt"
+$OutputFile = "C:\Temp\Port_Connectivity_Report.csv"
+
+# Enter ports separated by commas (e.g. "3389, 443, 80")
+$PortsToTest = "3389, 443" 
+
+# Settings
+$TimeoutMilliseconds = 1000  # 1 second timeout per port
+# ==========================================
+
+# --- Validations ---
+if (-not (Test-Path -Path $InputFile)) {
+    Write-Error "STOPPING: Input file not found at: $InputFile"
+    return
+}
+
+# Ensure Output Directory Exists
+$outputDir = Split-Path -Path $OutputFile -Parent
+if (-not (Test-Path -Path $outputDir) -and -not [string]::IsNullOrEmpty($outputDir)) {
+    New-Item -ItemType Directory -Path $outputDir -Force | Out-Null
+}
+
+# Process Port String into Array
+$portArray = $PortsToTest -split "," | ForEach-Object { $_.Trim() }
+
+# Read Server List
+$serverList = Get-Content -Path $InputFile
+$totalServers = $serverList.Count
+$results = [System.Collections.Generic.List[PSCustomObject]]::new()
+$counter = 0
+
+Write-Host "Starting connectivity check for $totalServers servers..." -ForegroundColor Cyan
+Write-Host "Ports to check: $($portArray -join ', ')" -ForegroundColor Cyan
+
+foreach ($server in $serverList) {
+    $counter++
+    $percentComplete = ($counter / $totalServers) * 100
+    Write-Progress -Activity "Testing Connectivity" -Status "Processing $server ($counter of $totalServers)" -PercentComplete $percentComplete
+
+    $target = $server.Trim()
+    if ([string]::IsNullOrWhiteSpace($target)) { continue }
+
+    # --- 1. Ping Test (Run once per server) ---
+    $pingStatus = "Failed"
+    $pingError = ""
+    
+    try {
+        if (Test-Connection -ComputerName $target -Count 1 -Quiet -ErrorAction SilentlyContinue) {
+            $pingStatus = "Success"
+        }
+    }
+    catch {
+        $pingError = $_.Exception.Message
+    }
+
+    # --- 2. Port Loop (Run for every port specified) ---
+    foreach ($port in $portArray) {
+        $portStatus = "Closed/Filtered"
+        $notes = ""
+        
+        # If ping failed, we note it, but we still try the port 
+        # (some firewalls block ping but allow traffic)
+        if ($pingStatus -eq "Failed") { $notes = "Ping Failed" }
+
+        try {
+            # Parse port to int to ensure validity
+            [int]$p = $port 
+            
+            $tcpClient = New-Object System.Net.Sockets.TcpClient
+            $connectTask = $tcpClient.ConnectAsync($target, $p)
+            $wait = $connectTask.Wait($TimeoutMilliseconds)
+            
+            if ($wait -and $tcpClient.Connected) {
+                $portStatus = "Open"
+                $tcpClient.Close()
+            }
+        }
+        catch {
+            $notes = "$notes; Port Check Error: $($_.Exception.Message)"
+        }
+        finally {
+            if ($tcpClient) { $tcpClient.Dispose() }
+        }
+
+        # --- 3. Create Result Object ---
+        $resultObject = [PSCustomObject]@{
+            ServerName  = $target
+            TimeStamp   = (Get-Date).ToString("yyyy-MM-dd HH:mm:ss")
+            PingStatus  = $pingStatus
+            TargetPort  = $port
+            PortStatus  = $portStatus
+            Notes       = $notes.Trim('; ')
+        }
+
+        $results.Add($resultObject)
+    }
+}
+
+# --- Export Results ---
+try {
+    $results | Export-Csv -Path $OutputFile -NoTypeInformation -Force
+    Write-Host "Process Complete! Results saved to: $OutputFile" -ForegroundColor Green
+}
+catch {
+    Write-Error "Failed to save CSV file. Check permissions. Error: $($_.Exception.Message)"
+}
