@@ -1,12 +1,1 @@
-Category	Item / Service	Validation Action	Region(s)	Status (Pass/Fail)	Notes
-Connectivity	Secure Tunnel	Check "CyberArk Privilege Cloud Secure Tunnel" service is Running on all 8 servers.	All		
-Connectivity	Portal Access	Log in to the PCloud URL via ISP/Corporate network (SAML/IdP).	Global		
-Connectors	PSM Service	Verify "CyberArk Privileged Session Manager" service is Running.	All		
-Connectors	CPM Service	Verify "CyberArk Password Manager" service is Running.	All		
-Functionality	RDP Proxy	Initiate a PSM-RDP connection to a target in each of the 4 regions.	1, 2, 3, 4		
-Functionality	Web Proxy	Initiate a PSM-Web connection (e.g., Azure/AWS/vCenter console).	All		
-Functionality	CPM Verifications	Trigger a "Verify" on a test account in each region to ensure CPM-Vault sync.	1, 2, 3, 4		
-Functionality	CPM Changes	Perform a "Change" task on a test account to verify password rotation.	All		
-Infrastructure	GPO/Hardening	Ensure no local policies were reverted during the maintenance window.	All		
-Auditing	Recording Upload	Verify that a test session recording is viewable in the Monitoring tab.	Global		
-Discovery	Discovery Jobs	Run a manual scan or check if scheduled Discovery scans are active.	All		
+
